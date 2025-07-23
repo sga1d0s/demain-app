@@ -3,18 +3,13 @@
 # ----------------------------
 FROM node:20-alpine AS builder
 
-# Ponemos todo bajo /app
 WORKDIR /app
 
-# 1) Copiamos solo package.json y package-lock.json de tu API
+# 1) Copiamos sólo el package.json y el lockfile (si existe)
 COPY apps/server/package.json apps/server/package-lock.json* ./
 
-# 2) Instalamos dependencias (npm ci si hay lockfile, npm install si no)
-RUN if [ -f package-lock.json ]; then \
-      npm ci; \
-    else \
-      npm install; \
-    fi
+# 2) Instalamos dependencias siempre via npm install y con salida verbosa
+RUN npm install --loglevel verbose
 
 # 3) Copiamos el resto del código de la API
 COPY apps/server/ ./
@@ -42,12 +37,9 @@ COPY --from=builder /app/dist        ./dist
 COPY --from=builder /app/prisma      ./prisma
 COPY --from=builder /app/package.json ./
 
-# 2) Variables por defecto (sobre-escribibles desde docker-compose)
 ENV NODE_ENV=production
 ENV PORT=3000
 
-# 3) Exponemos el puerto de la API
 EXPOSE 3000
 
-# 4) Arrancamos el servidor desde el código compilado
 CMD ["node", "dist/index.js"]
