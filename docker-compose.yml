@@ -3,11 +3,11 @@ services:
   db_prod:
     image: postgres:16
     env_file:
-      - ./stack.prod.env
+      - ./stack.env
     environment:
-      POSTGRES_DB:       ${DB_NAME}
-      POSTGRES_USER:     ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_DB:       ${PROD_DB_NAME}
+      POSTGRES_USER:     ${PROD_DB_USER}
+      POSTGRES_PASSWORD: ${PROD_DB_PASS}
     ports:
       - "5434:5432"
     volumes:
@@ -18,11 +18,11 @@ services:
   db_dev:
     image: postgres:16
     env_file:
-      - ./stack.dev.env
+      - ./stack.env
     environment:
-      POSTGRES_DB:       ${DB_NAME}
-      POSTGRES_USER:     ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_DB:       ${DEV_DB_NAME}
+      POSTGRES_USER:     ${DEV_DB_USER}
+      POSTGRES_PASSWORD: ${DEV_DB_PASS}
     ports:
       - "5433:5432"
     volumes:
@@ -36,17 +36,17 @@ services:
       dockerfile: Dockerfile
     ports:
       - "${PORT}:${PORT}"
-    # env_file:
-    #   - ./stack.prod.env
-    environment:
-      - NODE_ENV=${NODE_ENV}
-      - PORT=${PORT}
-      - DB_HOST=${DB_HOST}
-      - DB_PORT=${DB_PORT}
-      - DB_NAME=${DB_NAME}
-      - DB_USER=${DB_USER}
-      - DB_PASS=${DB_PASS}
-      - DATABASE_URL=${DATABASE_URL}
+    env_file:
+      - ./stack.env
+    # environment:
+    #   - NODE_ENV=${NODE_ENV}
+    #   - PORT=${PORT}
+    #   - DB_HOST=${DB_HOST}
+    #   - DB_PORT=${DB_PORT}
+    #   - DB_NAME=${DB_NAME}
+    #   - DB_USER=${DB_USER}
+    #   - DB_PASS=${DB_PASS}
+    #   - DATABASE_URL=${DATABASE_URL}
     depends_on:
       - db_prod
       - db_dev
