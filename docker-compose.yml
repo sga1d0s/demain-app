@@ -1,36 +1,58 @@
+version: "3.9"
 
 services:
-  db_dev:
+  db_prod:
     image: postgres:16
-    container_name: demain_db_dev
+    env_file:
+      - ./stack.env
     environment:
-      POSTGRES_DB: ${POSTGRES_DEV_DB}
-      POSTGRES_USER: ${POSTGRES_DEV_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_DEV_PASS}
+      POSTGRES_DB:       ${DB_NAME}
+      POSTGRES_USER:     ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
     volumes:
-      - pgdata_dev:/var/lib/postgresql/data
-    ports:
-      - "5433:5432"
+      - pgdata_prod:/var/lib/postgresql/data
     networks:
       - demain-net
 
-  db_prod:
+  db_dev:
     image: postgres:16
-    container_name: demain_db_prod
+    env_file:
+      - ./stack.env
     environment:
-      POSTGRES_DB: ${POSTGRES_PROD_DB}
-      POSTGRES_USER: ${POSTGRES_PROD_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PROD_PASS}
+      POSTGRES_DB:       ${DB_NAME}
+      POSTGRES_USER:     ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
     volumes:
-      - pgdata_prod:/var/lib/postgresql/data
+      - pgdata_dev:/var/lib/postgresql/data
+    networks:
+      - demain-net
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
-      - "5434:5432"
+      - "${PORT}:${PORT}"
+    env_file:
+      - ./stack.env
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - PORT=${PORT}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+      - DATABASE_URL=${DATABASE_URL}
+    depends_on:
+      - db_prod
+      - db_dev
     networks:
       - demain-net
 
 volumes:
-  pgdata_dev:
   pgdata_prod:
+  pgdata_dev:
 
 networks:
   demain-net:
