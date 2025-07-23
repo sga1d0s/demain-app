@@ -40,3 +40,5 @@ apps/mobile/ios/
 
 # VSCode
 .vscode/
+stack.dev.env
+stack.prod.env
