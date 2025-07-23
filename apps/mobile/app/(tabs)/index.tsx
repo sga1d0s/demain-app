@@ -1,25 +1,28 @@
-// App.tsx (o App.js si no usas TS)
 import React, { useEffect, useState } from "react";
-import { SafeAreaView, Text, StyleSheet, ActivityIndicator } from "react-native";
+import {
+  SafeAreaView,
+  Text,
+  StyleSheet,
+  ActivityIndicator,
+} from "react-native";
 
 export default function App() {
-  const [status, setStatus] = useState<"loading" | "ok" | "error">("loading");
+  const [status, setStatus] = useState<"loading" | "ok" | "error">(
+    "loading"
+  );
+  const [dbName, setDbName] = useState<string | null>(null);
 
   useEffect(() => {
-    // • En Expo Go en dispositivo real, usa la IP de tu máquina en la red local:
-    //   ej. "http://192.168.1.50:3000"
-    // • En Android emulador con Expo CLI, también puedes usar 10.0.2.2
-    // • En iOS simulador: localhost
     const BASE_URL = "http://192.168.1.96:3000";
 
     fetch(`${BASE_URL}/health`)
-      .then(res => {
+      .then((res) => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.json();
       })
-      .then(json => {
-        const newStatus = json.db === "reachable" ? "ok" : "error";
-        setStatus(newStatus);
+      .then((json: { status: string; db: string; dbName?: string }) => {
+        setDbName(json.dbName ?? null);
+        setStatus(json.db === "reachable" ? "ok" : "error");
       })
       .catch(() => setStatus("error"));
   }, []);
@@ -27,15 +30,30 @@ export default function App() {
   return (
     <SafeAreaView style={styles.container}>
       {status === "loading" && <ActivityIndicator size="large" />}
-      {status === "ok"     && <Text style={[styles.text, styles.ok]}>✅ DB reachable</Text>}
-      {status === "error"  && <Text style={[styles.text, styles.error]}>❌ No hay acceso a la DB</Text>}
+
+      {status === "ok" && (
+        <>
+          <Text style={[styles.text, styles.ok]}>✅ DB reachable</Text>
+          {dbName && (
+            <Text style={[styles.text, styles.ok]}>
+              📛 Database: {dbName}
+            </Text>
+          )}
+        </>
+      )}
+
+      {status === "error" && (
+        <Text style={[styles.text, styles.error]}>
+          ❌ No hay acceso a la DB
+        </Text>
+      )}
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: "center", alignItems: "center" },
-  text:      { fontSize: 18, marginTop: 16 },
-  ok:        { color: "green" },
-  error:     { color: "red" }
+  text: { fontSize: 18, marginTop: 16 },
+  ok: { color: "green" },
+  error: { color: "red" },
 });

@@ -23,14 +23,25 @@ app.use(
 app.use(express.json());
 
 // — health check —
+// index.ts (módulo Express / Prisma)
 app.get("/health", async (req, res) => {
   try {
+    // 1) Ping básico
     await prisma.$queryRaw`SELECT 1`;
-    // Asegúrate de que here también se envíen las cabeceras CORS
-    res.json({ status: "ok", db: "reachable" });
+
+    // 2) Obtener nombre de la DB
+    // Para Postgres:
+    const result = await prisma.$queryRaw<
+      { name: string }[]
+    >`SELECT current_database() AS name`;
+    const dbName = result[0]?.name ?? "unknown";
+
+    res.json({ status: "ok", db: "reachable", dbName });
   } catch (error) {
     console.error("DB health check failed:", error);
-    res.status(500).json({ status: "error", db: "unreachable" });
+    res
+      .status(500)
+      .json({ status: "error", db: "unreachable", dbName: null });
   }
 });
 
