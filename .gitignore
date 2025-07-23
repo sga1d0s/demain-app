@@ -1,0 +1,42 @@
+# Node modules
+node_modules/
+apps/*/node_modules/
+
+# Build outputs
+dist/
+build/
+*.log
+
+# Environment variables
+.env
+apps/*/.env
+
+# Docker
+docker-compose.override.yml
+*.local.yml
+*.bak
+*.tar
+.env.docker
+.env.*
+
+# DB volumes (si llegas a montar fuera de volumes)
+pgdata_dev/
+pgdata_prod/
+
+# System
+.DS_Store
+Thumbs.db
+
+# React Native / Expo
+.expo/
+.expo-shared/
+apps/mobile/.expo/
+apps/mobile/.expo-shared/
+apps/mobile/android/
+apps/mobile/ios/
+
+# TypeScript
+*.tsbuildinfo
+
+# VSCode
+.vscode/
