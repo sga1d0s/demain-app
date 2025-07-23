@@ -1,0 +1,16 @@
+
+# Entorno de ejecución
+NODE_ENV=production
+
+# Puerto de la API
+PORT=3000
+
+# Datos de la base de datos de producción
+DB_HOST=db_prod
+DB_PORT=5432
+DB_NAME=demain_prod_db
+DB_USER=demain_prod_user
+DB_PASS=demain_prod_pass
+
+# URL completa para Prisma u otros ORMs
+DATABASE_URL="postgresql://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}"
