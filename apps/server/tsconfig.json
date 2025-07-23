@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    // A qué versión de JS quieres compilar
+    "target": "ES2021",
+
+    // Sistema de módulos para Node.js
+    "module": "commonjs",
+
+    // Carpeta raíz de tu código TS
+    "rootDir": "src",
+
+    // Dónde poner los .js generados
+    "outDir": "dist",
+
+    // Chequeos más estrictos
+    "strict": true,
+
+    // Permite importar CommonJS como ESModules
+    "esModuleInterop": true,
+
+    // Ignora verificación de tipos en las libs de node_modules
+    "skipLibCheck": true
+  },
+  // Incluye todo lo que esté en src/
+  "include": ["src/**/*"]
+}
