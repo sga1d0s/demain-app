@@ -10,7 +10,7 @@ export default function App() {
     //   ej. "http://192.168.1.50:3000"
     // • En Android emulador con Expo CLI, también puedes usar 10.0.2.2
     // • En iOS simulador: localhost
-    const BASE_URL = "http://192.168.1.96:3000";
+    const BASE_URL = "http://192.168.1.50:3000";
 
     fetch(`${BASE_URL}/health`)
       .then(res => {
@@ -18,8 +18,7 @@ export default function App() {
         return res.json();
       })
       .then(json => {
-        const newStatus = json.db === "reachable" ? "ok" : "error";
-        setStatus(newStatus);
+        json.db === "reachable" ? setStatus("ok") : setStatus("error");
       })
       .catch(() => setStatus("error"));
   }, []);
