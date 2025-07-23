@@ -3,31 +3,29 @@
 # ----------------------------
 FROM node:20-alpine AS builder
 
+# Ponemos todo bajo /app
 WORKDIR /app
 
-# Copiamos sólo el package.json y lockfile de tu servidor (ajustado a tu ruta)
-COPY app/server/package.json app/server/package-lock.json* ./
+# 1) Copiamos solo package.json y package-lock.json de tu API
+COPY apps/server/package.json apps/server/package-lock.json* ./
 
-# Mostramos el directorio para debug (puedes quitarlo después)
-RUN ls -l && pwd
-
-# Instalamos dependencias
+# 2) Instalamos dependencias (npm ci si hay lockfile, npm install si no)
 RUN if [ -f package-lock.json ]; then \
       npm ci; \
     else \
       npm install; \
     fi
 
-# Copiamos el resto del código de la API
-COPY app/server/ ./
+# 3) Copiamos el resto del código de la API
+COPY apps/server/ ./
 
-# Generamos el cliente de Prisma
+# 4) Generamos el cliente de Prisma
 RUN npx prisma generate
 
-# Compilamos TypeScript
+# 5) Compilamos TypeScript
 RUN npm run build
 
-# Eliminamos devDependencies para aligerar la imagen
+# 6) Eliminamos devDependencies para aligerar la imagen final
 RUN npm prune --production
 
 
@@ -38,15 +36,18 @@ FROM node:20-alpine AS runner
 
 WORKDIR /app
 
-# Trae módulos y artefactos compilados del builder
+# 1) Traemos node_modules y build desde el builder
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/dist        ./dist
 COPY --from=builder /app/prisma      ./prisma
 COPY --from=builder /app/package.json ./
 
+# 2) Variables por defecto (sobre-escribibles desde docker-compose)
 ENV NODE_ENV=production
 ENV PORT=3000
 
+# 3) Exponemos el puerto de la API
 EXPOSE 3000
 
+# 4) Arrancamos el servidor desde el código compilado
 CMD ["node", "dist/index.js"]
