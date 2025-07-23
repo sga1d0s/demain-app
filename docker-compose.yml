@@ -2,8 +2,8 @@
 services:
   db_prod:
     image: postgres:16
-    # env_file:
-    #   - ./stack.env
+    env_file:
+      - ./stack.env
     environment:
       POSTGRES_DB:       ${PROD_DB_NAME}
       POSTGRES_USER:     ${PROD_DB_USER}
@@ -17,8 +17,8 @@ services:
 
   db_dev:
     image: postgres:16
-    # env_file:
-    #   - ./stack.env
+    env_file:
+      - ./stack.env
     environment:
       POSTGRES_DB:       ${DEV_DB_NAME}
       POSTGRES_USER:     ${DEV_DB_USER}
@@ -36,8 +36,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "${PORT}:${PORT}"
-    # env_file:
-    #   - ./stack.env
+    env_file:
+      - ./stack.env
     environment:
       - NODE_ENV=${NODE_ENV}
       - PORT=${PORT}
