@@ -42,10 +42,6 @@ app.use(
 
 app.use(express.json());
 
-app.get("/", (req, res) => {
-  res.redirect("/health");
-});
-
 app.get("/health", async (req, res) => {
   try {
     // 1) Ping básico
