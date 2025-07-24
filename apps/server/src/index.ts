@@ -7,29 +7,35 @@ dotenv.config();
 const app = express();
 const prisma = new PrismaClient();
 
+// 1) CSP: ponlo antes de cualquier middleware que sirva JS/HTML
 app.use((req, res, next) => {
   res.setHeader(
     "Content-Security-Policy",
-    "default-src 'self'; " +
-    "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; " +
-    "connect-src 'self' http://localhost:3000 http://192.168.1.96:3000; " +
-    "style-src 'self' 'unsafe-inline'; " +
-    "img-src 'self' data:;"
+    [
+      "default-src 'self'",
+      // Permitimos inline para bundles de Expo/Web y haces load de tus propios scripts
+      "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net",
+      // Añadimos todos los endpoints a los que tu app Web o cliente RN se va a conectar:
+      "connect-src 'self' http://localhost:3000 http://192.168.1.96:3000 https://demainapp.dnsalias.com",
+      "style-src 'self' 'unsafe-inline'",
+      "img-src 'self' data:",
+      // Si más adelante necesitas fonts, websockets, frames, etc., añádelos aquí
+    ].join("; ")
   );
   next();
 });
 
+// 2) CORS
 app.use(
   cors({
     origin: [
-      "http://localhost:8081",
-      "http://192.168.1.96:19000",
-      "exp://192.168.1.96:19000",
-      "https://demainapp.dnsalias.com",
-
+      "http://localhost:8081",          // Expo Web (dev)
+      "http://192.168.1.96:19000",      // Expo DevTools
+      "exp://192.168.1.96:19000",       // Expo Go
+      "https://demainapp.dnsalias.com", // Producción
     ],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    credentials: true,
+    credentials: true,               // si pasas cookies o auth headers
     optionsSuccessStatus: 200,
   })
 );
