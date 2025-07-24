@@ -16,7 +16,7 @@ app.use((req, res, next) => {
       // Permitimos inline para bundles de Expo/Web y haces load de tus propios scripts
       "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net",
       // Añadimos todos los endpoints a los que tu app Web o cliente RN se va a conectar:
-      "connect-src 'self' http://localhost:3000 http://192.168.1.96:3000 https://demainapp.dnsalias.com",
+      "connect-src 'self' http://localhost:3000 http://192.168.1.96:3000 https://demainapp.myqnapcloud.com",
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data:",
       // Si más adelante necesitas fonts, websockets, frames, etc., añádelos aquí
@@ -32,7 +32,7 @@ app.use(
       "http://localhost:8081",          // Expo Web (dev)
       "http://192.168.1.96:19000",      // Expo DevTools
       "exp://192.168.1.96:19000",       // Expo Go
-      "https://demainapp.dnsalias.com", // Producción
+      "https://demainapp.myqnapcloud.com", // Producción
     ],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     credentials: true,               // si pasas cookies o auth headers

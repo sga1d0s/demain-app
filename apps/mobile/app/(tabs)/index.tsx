@@ -19,7 +19,7 @@ export default function App() {
 
     const BASE_URL = __DEV__
       ? "http://localhost:3000"            // dev: servidor local/NAS
-      : "http://demainapp.dnsalias.com";  // prod: tu API real
+      : "https://demainapp.myqnapcloud.com";  // prod: tu API real
 
     fetch(`${BASE_URL}/health`)
       .then((res) => {
