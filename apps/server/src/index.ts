@@ -13,6 +13,8 @@ app.use(
       "http://localhost:8081",
       "http://192.168.1.96:19000",
       "exp://192.168.1.96:19000",
+      "https://demainapp.dnsalias.com",
+
     ],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     credentials: true,
