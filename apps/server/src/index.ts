@@ -7,6 +7,18 @@ dotenv.config();
 const app = express();
 const prisma = new PrismaClient();
 
+app.use((req, res, next) => {
+  res.setHeader(
+    "Content-Security-Policy",
+    "default-src 'self'; " +
+    "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; " +
+    "connect-src 'self' http://localhost:3000 http://192.168.1.96:3000; " +
+    "style-src 'self' 'unsafe-inline'; " +
+    "img-src 'self' data:;"
+  );
+  next();
+});
+
 app.use(
   cors({
     origin: [
@@ -21,6 +33,7 @@ app.use(
     optionsSuccessStatus: 200,
   })
 );
+
 app.use(express.json());
 
 app.get("/health", async (req, res) => {
