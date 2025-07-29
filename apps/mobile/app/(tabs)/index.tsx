@@ -6,7 +6,6 @@ import {
   ActivityIndicator,
 } from "react-native";
 
-
 export default function App() {
   const [status, setStatus] = useState<"loading" | "ok" | "error">(
     "loading"
@@ -15,10 +14,11 @@ export default function App() {
   const [dbPort, setDbPort] = useState<number | null>(null);
 
   useEffect(() => {
+    /////////// PRODUCTION ///////////
+    // const BASE_URL = "https://sgaldos.myqnapcloud.com:3443";
 
-    const BASE_URL = __DEV__
-      ? "http://localhost:3000"            // dev: servidor local/NAS
-      : "https://demainapp.dnsalias.com";  // prod: tu API real
+    /////////// DEVELOP ///////////
+    const BASE_URL = "http://localhost:3000" 
 
     fetch(`${BASE_URL}/health`)
       .then((res) => {
