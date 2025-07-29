@@ -1,71 +1,32 @@
-import React, { useEffect, useState } from "react";
-import {
-  SafeAreaView,
-  Text,
-  StyleSheet,
-  ActivityIndicator,
-} from "react-native";
+// app/(tabs)/index.tsx
+import { useEffect, useState } from "react";
+import { View, Text, ActivityIndicator, StyleSheet } from "react-native";
 
-export default function App() {
-  const [status, setStatus] = useState<"loading" | "ok" | "error">(
-    "loading"
-  );
-  const [dbName, setDbName] = useState<string | null>(null);
-  const [dbPort, setDbPort] = useState<number | null>(null);
+export default function HomeScreen() {
+  const [status, setStatus] = useState<"loading" | "ok" | "error">("loading");
 
   useEffect(() => {
+
     /////////// PRODUCTION ///////////
     // const BASE_URL = "https://sgaldos.myqnapcloud.com:3443";
 
     /////////// DEVELOP ///////////
-    const BASE_URL = "http://localhost:3000" 
+    const BASE_URL = "http://localhost:3000"
 
     fetch(`${BASE_URL}/health`)
-      .then((res) => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return res.json();
+      .then((res) => res.json())
+      .then((json) => {
+        json.db === "reachable" ? setStatus("ok") : setStatus("error");
       })
-      .then(
-        (json: {
-          status: string;
-          db: string;
-          dbName?: string;
-          dbPort?: number;
-        }) => {
-          setDbName(json.dbName ?? null);
-          setDbPort(json.dbPort ?? null);
-          setStatus(json.db === "reachable" ? "ok" : "error");
-        }
-      )
       .catch(() => setStatus("error"));
   }, []);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       {status === "loading" && <ActivityIndicator size="large" />}
-
-      {status === "ok" && (
-        <>
-          <Text style={[styles.text, styles.ok]}>✅ DB reachable</Text>
-          {dbName && (
-            <Text style={[styles.text, styles.ok]}>
-              📛 Database: {dbName}
-            </Text>
-          )}
-          {dbPort !== null && (
-            <Text style={[styles.text, styles.ok]}>
-              🔌 Port: {dbPort}
-            </Text>
-          )}
-        </>
-      )}
-
-      {status === "error" && (
-        <Text style={[styles.text, styles.error]}>
-          ❌ No hay acceso a la DB
-        </Text>
-      )}
-    </SafeAreaView>
+      {status === "ok" && <Text style={[styles.text, styles.ok]}>✅ DB reachable</Text>}
+      {status === "error" && <Text style={[styles.text, styles.error]}>❌ No hay acceso a la DB</Text>}
+    </View>
   );
 }
 
